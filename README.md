@@ -1,0 +1,1 @@
+# cnes-pylint-extension
