@@ -1,0 +1,2 @@
+too-few-comments:1::Too few comments (29.31/30 %)
+too-few-comments:49:function2:Too few comments (27.78/30 %)

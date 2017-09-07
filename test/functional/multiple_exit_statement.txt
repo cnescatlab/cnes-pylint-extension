@@ -1,0 +1,2 @@
+multiple-exit-statements:5:func:More than one exit statement for this loop
+multiple-exit-statements:18:func:More than one exit statement for this loop

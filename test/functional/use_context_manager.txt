@@ -1,0 +1,4 @@
+use-context-manager:10::Consider opening the file within a context manager
+use-context-manager:15::Consider acquiring the lock within a context manager
+use-context-manager:19::Consider acquiring the lock within a context manager
+use-context-manager:22::Consider acquiring the lock within a context manager

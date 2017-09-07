@@ -1,0 +1,4 @@
+bad-exit-condition:6::Exit condition based on equality or difference
+bad-exit-condition:9::Exit condition based on equality or difference
+bad-exit-condition:11::Exit condition based on equality or difference
+bad-exit-condition:17::Exit condition based on equality or difference

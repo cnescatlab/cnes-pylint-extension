@@ -1,0 +1,2 @@
+too-many-decorators:20:func_ko:Too many decorators for this function (6/5)
+too-many-decorators:31:MyClass.method:Too many decorators for this function (6/5)

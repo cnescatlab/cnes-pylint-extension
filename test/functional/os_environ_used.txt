@@ -1,0 +1,5 @@
+os-environ-used:10:function1:Consider dropping use of os.environ
+os-environ-used:12::Consider dropping use of os.environ
+os-environ-used:13::Consider dropping use of os.getenv()
+os-environ-used:14::Consider dropping use of os.putenv()
+os-environ-used:16::Consider dropping use of os.unsetenv()

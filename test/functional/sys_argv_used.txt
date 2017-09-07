@@ -1,0 +1,4 @@
+sys-argv-used:10:function1:Consider using argparse module instead of sys.argv
+sys-argv-used:12::Consider using argparse module instead of sys.argv
+sys-argv-used:14::Consider using argparse module instead of sys.argv
+sys-argv-used:15::Consider using argparse module instead of sys.argv
