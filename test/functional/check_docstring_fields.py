@@ -25,7 +25,7 @@ class MyClass(object):  # [missing-type-doc]
         self.par1 = par1
         self.par2 = par2
 
-    def method(self, par3, par4):  # [missing-param-doc, missing-type-doc, missing-docstring-description]
+    def method(self, par3, par4):  # [missing-param-doc, missing-type-doc, missing-docstring-description, missing-returns-doc]
         """
 
         :param int par1: some param

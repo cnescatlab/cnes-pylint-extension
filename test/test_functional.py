@@ -21,6 +21,7 @@ from pylint import lint
 from pylint import reporters
 from pylint import utils
 
+
 class test_dialect(csv.excel):
     if sys.version_info[0] < 3:
         delimiter = b':'
@@ -104,7 +105,6 @@ class TestFile(object):
         'requires': lambda s: s.split(',')
     }
 
-
     def __init__(self, directory, filename):
         self._directory = directory
         self.base = filename.replace('.py', '')
@@ -113,7 +113,7 @@ class TestFile(object):
             'max_pyver': (4, 0),
             'requires': [],
             'except_implementations': [],
-            }
+        }
         self._parse_options()
 
     def _parse_options(self):
@@ -264,7 +264,7 @@ class LintModuleTest(unittest.TestCase):
             if implementation in implementations:
                 self.skipTest(
                     'Test cannot run with Python implementation %r'
-                     % (implementation, ))
+                    % (implementation, ))
 
     def __str__(self):
         return "%s (%s.%s)" % (self._test_file.base, self.__class__.__module__,
@@ -355,6 +355,7 @@ class LintModuleOutputUpdate(LintModuleTest):
                 for line in remaining:
                     writer.writerow(line.to_csv())
 
+
 def suite():
     input_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              'functional')
@@ -373,7 +374,7 @@ def load_tests(loader, tests, pattern):
     return suite()
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     if '-u' in sys.argv:
         UPDATE = True
         sys.argv.remove('-u')

@@ -21,7 +21,7 @@ import os
 
 import astroid
 from astroid.exceptions import InferenceError
-from pylint.extensions import check_docs
+from pylint.extensions import docparams
 from pylint.interfaces import IAstroidChecker, ITokenChecker
 from pylint.checkers import BaseChecker, BaseTokenChecker
 from pylint.checkers.utils import check_messages
@@ -485,20 +485,20 @@ class McCabeChecker(BaseChecker):
             = visit_excepthandler = visit_while
 
 
-class SphinxDocChecker(check_docs.ParamDocChecker):
+class SphinxDocChecker(docparams.DocstringParameterChecker):
     """Checks sphinx documentation in docstrings"""
 
     name = 'sphinxdoc'
-    msgs = check_docs.ParamDocChecker.msgs.copy()
-    msgs['W9005'] = ('"%s" field missing from %s docstring',
+    msgs = docparams.DocstringParameterChecker.msgs.copy()
+    msgs['W9095'] = ('"%s" field missing from %s docstring',
                      'missing-docstring-field',
                      'Used when an expected field is not present in the'
                      'docstring of a module, class, function or method')
-    msgs['W9006'] = ('malformed "%s" field in %s docstring',
+    msgs['W9096'] = ('malformed "%s" field in %s docstring',
                      'malformed-docstring-field',
                      'Used when an expected field is not present in the'
                      'docstring of a module, class, function or method')
-    msgs['W9007'] = ('description missing in %s docstring',
+    msgs['W9097'] = ('description missing in %s docstring',
                      'missing-docstring-description',
                      'Used when no description exists for a docstring')
 
@@ -522,7 +522,7 @@ class SphinxDocChecker(check_docs.ParamDocChecker):
 
     @check_messages('malformed-docstring-field', 'missing-docstring-field')
     def visit_functiondef(self, node):
-        check_docs.ParamDocChecker.visit_functiondef(self, node)
+        super(SphinxDocChecker, self).visit_functiondef(node)
         if not node.doc:
             return
         self._check_description_exists(node)

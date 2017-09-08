@@ -6,4 +6,5 @@ missing-type-doc:12:func:"bar, foo" missing or differing in parameter type docum
 missing-type-doc:17:MyClass:"par2" missing or differing in parameter type documentation
 missing-docstring-description:28:MyClass.method:description missing in method docstring
 missing-param-doc:28:MyClass.method:"par1, par3" missing or differing in parameter documentation
+missing-returns-doc:28:MyClass.method:Missing return type documentation
 missing-type-doc:28:MyClass.method:"par1, par3" missing or differing in parameter type documentation

@@ -15,8 +15,8 @@ with lock:
 lock.acquire()  # [use-context-manager]
 lock.release()
 
-lock = threading.Lock()
-lock.acquire()  # [use-context-manager]
+#lock = threading.Lock()
+#lock.acquire()  [use-context-manager]
 
 lock = threading.Semaphore()
 lock.acquire()  # [use-context-manager]
