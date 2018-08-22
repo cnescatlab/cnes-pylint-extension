@@ -27,6 +27,7 @@ from pylint.checkers import BaseChecker, BaseTokenChecker
 from pylint.checkers.utils import check_messages
 from pylint.checkers.raw_metrics import get_type
 from pylint.utils import WarningScope
+import tokenize
 
 
 class DesignChecker(BaseChecker):
@@ -100,7 +101,7 @@ class DesignChecker(BaseChecker):
                 if funcdef.name == 'open':
                     parent = funcdef.parent
                     if (isinstance(parent, astroid.Module)
-                            and parent.name == '__builtin__'):
+                            and parent.name == '_io'):
                         if not isinstance(node.parent, astroid.With):
                             self.add_message('use-context-manager', node=node,
                                              args='opening the file')
@@ -216,6 +217,8 @@ class CommentMetricsChecker(BaseTokenChecker):
         """update stats"""
         i = 0
         tokens = list(tokens)
+        if tokens[0].type == tokenize.ENCODING:
+            i = 1
         tail = None
         while i < len(tokens):
             start_line = tokens[i][2][0]

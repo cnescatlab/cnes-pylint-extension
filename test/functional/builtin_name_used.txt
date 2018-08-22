@@ -1,4 +1,3 @@
-builtin-name-used:6:MyClass.__init__:file is named after a built-in, consider renaming it
 builtin-name-used:6:MyClass.__init__:str is named after a built-in, consider renaming it
 builtin-name-used:8:MyClass:bool is named after a built-in, consider renaming it
 builtin-name-used:10:MyClass.map:map is named after a built-in, consider renaming it

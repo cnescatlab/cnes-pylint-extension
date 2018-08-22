@@ -3,7 +3,7 @@
 
 class MyClass(object):
     def __init__(self):
-        ((self.file, (self.str, self.something)), plop) = (('test.txt', 'hello'), 'plop')  # [builtin-name-used, builtin-name-used]
+        ((self.str, self.something), plop) = (('test.txt', 'hello'), 'plop')  # [builtin-name-used]
 
     bool = True  # [builtin-name-used]
 
