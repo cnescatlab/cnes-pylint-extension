@@ -24,3 +24,4 @@ cnes-pylint-extension checks the following metrics :
 Available versions :
 - Version 1.0 - compatible pylint 1.5
 - Version 2.0 - compatible pylint 1.6
+- Version 3.0 - compatible pylint 1.7.4
