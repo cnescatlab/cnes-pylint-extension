@@ -1,10 +1,13 @@
 malformed-docstring-field:1::malformed "date" field in check_docstring_fields docstring
 malformed-docstring-field:1::malformed "version" field in check_docstring_fields docstring
 missing-docstring-field:1::"author" field missing from check_docstring_fields docstring
-missing-param-doc:12:func:"bar, foo" missing or differing in parameter documentation
-missing-type-doc:12:func:"bar, foo" missing or differing in parameter type documentation
-missing-type-doc:17:MyClass:"par2" missing or differing in parameter type documentation
+missing-param-doc:12:func:"bar, foo" missing in parameter documentation
+missing-type-doc:12:func:"bar, foo" missing in parameter type documentation
+missing-type-doc:17:MyClass:"par2" missing in parameter type documentation
+differing-param-doc:28:MyClass.method:"par1" differing in parameter documentation
+differing-type-doc:28:MyClass.method:"par1" differing in parameter type documentation
 missing-docstring-description:28:MyClass.method:description missing in method docstring
-missing-param-doc:28:MyClass.method:"par1, par3" missing or differing in parameter documentation
-missing-returns-doc:28:MyClass.method:Missing return type documentation
-missing-type-doc:28:MyClass.method:"par1, par3" missing or differing in parameter type documentation
+missing-param-doc:28:MyClass.method:"par3" missing in parameter documentation
+missing-return-doc:28:MyClass.method:Missing return documentation
+missing-return-type-doc:28:MyClass.method:Missing return type documentation
+missing-type-doc:28:MyClass.method:"par3" missing in parameter type documentation
