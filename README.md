@@ -25,3 +25,4 @@ Available versions :
 - Version 1.0 - compatible pylint 1.5
 - Version 2.0 - compatible pylint 1.6
 - Version 3.0 - compatible pylint 1.7.4
+- Version 4.0 - compatible pylint 2.1.1
