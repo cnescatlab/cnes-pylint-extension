@@ -9,7 +9,7 @@ from os import environ as e
 def function1():
     a = os.environ  # [os-environ-used]
 
-print e  # [os-environ-used]
+print(e)  # [os-environ-used]
 env = o.getenv()  # [os-environ-used]
 o.putenv('TOTO', 'titi')  # [os-environ-used]
 sep = o.sep
