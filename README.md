@@ -21,13 +21,13 @@ cnes-pylint-extension checks the following metrics :
 - R5302 - too-high-complexity-simplified (defailt < 20)
 - R5201 - too-few-comments (default > 20%)
 
-Available versions :
+# Available versions :
 - Version 1.0 - compatible pylint 1.5
 - Version 2.0 - compatible pylint 1.6
 - Version 3.0 - compatible pylint 1.7.4 and 1.9.1
 - Version 4.0 - compatible pylint 2.1.1
 
-To use these checkers:
+# To use these checkers:
 
 - Add the 'checkers/' subdirectory to your PYTHONPATH
 - Add the line "load-plugins=cnes_checker" to the [MASTER] section of your .pylintrc
