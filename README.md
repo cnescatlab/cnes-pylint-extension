@@ -26,3 +26,9 @@ Available versions :
 - Version 2.0 - compatible pylint 1.6
 - Version 3.0 - compatible pylint 1.7.4 and 1.9.1
 - Version 4.0 - compatible pylint 2.1.1
+
+To use these checkers:
+
+- Add the 'checkers/' subdirectory to your PYTHONPATH
+- Add the line "load-plugins=cnes_checker" to the [MASTER] section of your .pylintrc
+  or add "--load-plugins=cnes_checker" to your command line in order to activate them
