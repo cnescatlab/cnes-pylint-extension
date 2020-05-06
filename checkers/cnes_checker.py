@@ -26,7 +26,7 @@ from pylint.interfaces import IAstroidChecker, ITokenChecker
 from pylint.checkers import BaseChecker, BaseTokenChecker
 from pylint.checkers.utils import check_messages
 from pylint.checkers.raw_metrics import get_type
-from pylint.utils import WarningScope
+from pylint.constants import WarningScope
 import tokenize
 
 

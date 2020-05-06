@@ -26,9 +26,32 @@ cnes-pylint-extension checks the following metrics :
 - Version 2.0 - compatible pylint 1.6
 - Version 3.0 - compatible pylint 1.7.4 and 1.9.1
 - Version 4.0 - compatible pylint 2.1.1
+- Version 5.0 - compatible pylint 2.5.0
 
 # To use these checkers:
 
-- Add the 'checkers/' subdirectory to your PYTHONPATH
-- Add the line "load-plugins=cnes_checker" to the [MASTER] section of your .pylintrc
-  or add "--load-plugins=cnes_checker" to your command line in order to activate them
+## Install Pylint
+
+`pip install pylint==2.5.0`
+
+## Install CNES Pylint extension checkers
+
+Download the project's code source then add the checkers subdirectory to your PYTHONPATH :
+
+```
+unzip cnes-pylint-extension.zip
+cd cnes-pylint-extension
+echo export PYTHONPATH=$PYTHONPATH:$PWD/checkers >> ~/.bashrc
+source ~/.bashrc
+```
+
+To enable Pylint to use the extension, you need to edit your pylintrc file, and add "cnes_checker" to the plugins list.
+```
+[MASTER]
+load-plugins=cnes_checker
+...
+```
+
+Pylint is now able to use the extension.
+
+Otherwise, add `--load-plugins=cnes_checker` to your pylint command line in order to activate it.
