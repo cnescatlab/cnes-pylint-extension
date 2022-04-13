@@ -7,7 +7,7 @@ setuptools.setup(
     name="cnes-pylint-extension",
     version="5.0.0",
     author="CNES CatLab",
-    description="A PyLint plugin that can output to SonarQube-importable JSON",
+    description="A PyLint plugin to add coding CNES specific checks",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/cnescatlab/cnes-pylint-extension",
@@ -16,7 +16,7 @@ setuptools.setup(
     license_file='LICENSE',
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
@@ -24,4 +24,7 @@ setuptools.setup(
         "pylint-plugin-utils==0.7",
         "pylint==2.5.0"
     ],
+    project_urls={
+        'Bug Reports': 'https://github.com/cnescatlab/cnes-pylint-extension/issues'
+    }
 )

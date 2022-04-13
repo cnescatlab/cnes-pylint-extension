@@ -18,7 +18,7 @@ cnes-pylint-extension checks the following rules :
 
 cnes-pylint-extension checks the following metrics :
 - R5301 - too-high-complexity (default < 25)
-- R5302 - too-high-complexity-simplified (defailt < 20)
+- R5302 - too-high-complexity-simplified (default < 20)
 - R5201 - too-few-comments (default > 20%)
 
 # Available versions :
@@ -30,11 +30,16 @@ cnes-pylint-extension checks the following metrics :
 
 # To use these checkers:
 
-## Install Pylint
+## Install from PIP
+`pip install cnes-pylint-extension`
+
+## Install from sources
+
+### Install Pylint
 
 `pip install pylint==2.5.0`
 
-## Install CNES Pylint extension checkers
+### Install CNES Pylint extension checkers
 
 Download the project's code source then add the checkers subdirectory to your PYTHONPATH :
 
@@ -51,6 +56,8 @@ To enable Pylint to use the extension, you need to edit your pylintrc file, and 
 load-plugins=cnes_checker
 ...
 ```
+
+## Usage
 
 Pylint is now able to use the extension.
 
