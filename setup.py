@@ -5,9 +5,9 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="cnes-pylint-extension",
-    version="5.0.0",
+    version="6.0.0",
     author="CNES CatLab",
-    description="A PyLint plugin to add coding CNES specific checks",
+    description="A PyLint plugin to add CNES specific checks",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/cnescatlab/cnes-pylint-extension",
@@ -22,7 +22,7 @@ setuptools.setup(
     python_requires='>=3.6',
     install_requires=[
         "pylint-plugin-utils==0.7",
-        "pylint==2.5.0"
+        "pylint>=2.12.0,<3.0.0"
     ],
     project_urls={
         'Bug Reports': 'https://github.com/cnescatlab/cnes-pylint-extension/issues'

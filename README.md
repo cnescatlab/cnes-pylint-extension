@@ -26,7 +26,9 @@ cnes-pylint-extension checks the following metrics :
 - Version 2.0 - compatible pylint 1.6
 - Version 3.0 - compatible pylint 1.7.4 and 1.9.1
 - Version 4.0 - compatible pylint 2.1.1
-- Version 5.0 - compatible pylint 2.5.0
+- Version 5.0 - compatible pylint >=2.5.0,<2.12.0
+- Version 6.0 - compatible pylint >=2.12,<3.0.0
+    - **warning**: At 6.0.0 release, latest pylint was 2.13.5. If you encounter issue with pylint>2.13.5 and <3.0.0 please open an issue.
 
 # To use these checkers:
 
@@ -37,7 +39,7 @@ cnes-pylint-extension checks the following metrics :
 
 ### Install Pylint
 
-`pip install pylint==2.5.0`
+`pip install pylint==2.13.5`
 
 ### Install CNES Pylint extension checkers
 
