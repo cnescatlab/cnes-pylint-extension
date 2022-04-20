@@ -182,6 +182,15 @@ class CommentMetricsChecker(BaseTokenChecker):
     """
 
     __implements__ = (ITokenChecker, IAstroidChecker)
+    
+    # Theses values are hardcoded in pylint (and have changed in pylint 2.12)
+    # We can't get them directly from the pylint lib :(
+    LINE_TYPE_DOCSTRING = 'docstring'
+    LINE_TYPE_COMMENT = 'comment'
+    LINE_TYPE_CODE = 'code'
+    LINE_TYPE_EMPTY = 'empty'
+    LINE_TYPES = [LINE_TYPE_DOCSTRING, LINE_TYPE_CODE, LINE_TYPE_COMMENT, LINE_TYPE_EMPTY]
+    
     name = 'commentmetrics'
     msgs = {'R5201': ('Too few comments (%s/%s %%)',
                       'too-few-comments',
@@ -210,8 +219,7 @@ class CommentMetricsChecker(BaseTokenChecker):
 
     def _reset(self):
         self._stats = {}
-        self._global_stats = dict.fromkeys(['docstring_lines', 'comment_lines',
-                                            'code_lines', 'empty_lines'], 0)
+        self._global_stats = dict.fromkeys(self.LINE_TYPES, 0)
 
     def process_tokens(self, tokens):
         """update stats"""
@@ -235,8 +243,7 @@ class CommentMetricsChecker(BaseTokenChecker):
         nb_lines = node.tolineno - node.fromlineno
         if nb_lines <= self.config.min_func_size_to_check_comments:
             return
-        func_stats = dict.fromkeys(['docstring_lines', 'comment_lines',
-                                    'code_lines', 'empty_lines'],
+        func_stats = dict.fromkeys(self.LINE_TYPES,
                                    0)
         for line in sorted(self._stats):
             if line > node.tolineno:
@@ -247,10 +254,10 @@ class CommentMetricsChecker(BaseTokenChecker):
                 func_stats[l_type] += (min(node.tolineno,
                                            line + lines_number - 1)
                                        - max(node.fromlineno, line) + 1)
-        if func_stats['code_lines'] <= 0:
+        if func_stats[self.LINE_TYPE_CODE] <= 0:
             return
-        ratio = ((func_stats['comment_lines'] + func_stats['docstring_lines'])
-                 / float(func_stats['code_lines']) * 100)
+        ratio = ((func_stats[self.LINE_TYPE_COMMENT] + func_stats[self.LINE_TYPE_DOCSTRING])
+                 / float(func_stats[self.LINE_TYPE_CODE]) * 100)
         if ratio < self.config.min_func_comments_ratio:
             self.add_message('too-few-comments', node=node,
                              args=('%.2f' % ratio,
@@ -258,11 +265,11 @@ class CommentMetricsChecker(BaseTokenChecker):
 
     @check_messages('too-few-comments')
     def visit_module(self, node):
-        if self._global_stats['code_lines'] <= 0:
+        if self._global_stats[self.LINE_TYPE_CODE] <= 0:
             return
-        ratio = ((self._global_stats['comment_lines'] +
-                  self._global_stats['docstring_lines']) /
-                 float(self._global_stats['code_lines']) * 100)
+        ratio = ((self._global_stats[self.LINE_TYPE_COMMENT] +
+                  self._global_stats[self.LINE_TYPE_DOCSTRING]) /
+                 float(self._global_stats[self.LINE_TYPE_CODE]) * 100)
         if ratio < self.config.min_module_comments_ratio:
             self.add_message('too-few-comments', node=node,
                              args=('%.2f' % ratio,
