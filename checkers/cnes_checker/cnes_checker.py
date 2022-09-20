@@ -576,6 +576,11 @@ class ForbiddenUsageChecker(BaseChecker):
                       'os-environ-used',
                       'Used when environment variables are accessed. A program'
                       'should not rely on its execution environment.'
+                      'The project properties such as login, database access URL,'
+                      'system properties, etc. could be managed using a properties'
+                      'file (XML, YAML or JSON format). Python modules like'
+                      '"configparser" (python version > 3.10.7) could be useful'
+                      'to manage properties along the project development.'
                      ),
             'R5403': ('Consider using argparse module instead of sys.argv',
                       'sys-argv-used',
