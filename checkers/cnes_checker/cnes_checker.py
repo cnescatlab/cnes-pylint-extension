@@ -22,9 +22,8 @@ import os
 import astroid
 from astroid.exceptions import InferenceError
 from pylint.extensions import docparams
-from pylint.interfaces import IAstroidChecker, ITokenChecker
 from pylint.checkers import BaseChecker, BaseTokenChecker
-from pylint.checkers.utils import check_messages
+from pylint.checkers import utils
 from pylint.checkers.raw_metrics import get_type
 from pylint.constants import WarningScope
 import tokenize
@@ -32,8 +31,6 @@ import tokenize
 
 class DesignChecker(BaseChecker):
     """Checks for multiple exit statements in loops"""
-
-    __implements__ = (IAstroidChecker,)
 
     name = 'design'
     msgs = {'R5101': ('More than one exit statement for this loop',
@@ -78,7 +75,7 @@ class DesignChecker(BaseChecker):
     def visit_for(self, node):
         self._exit_statements.append(0)
 
-    @check_messages('use-context-manager')
+    @utils.only_required_for_messages('use-context-manager')
     def visit_attribute(self, node):
         try:
             for infer in node.infer():
@@ -94,7 +91,7 @@ class DesignChecker(BaseChecker):
         except InferenceError:
             pass
 
-    @check_messages('use-context-manager')
+    @utils.only_required_for_messages('use-context-manager')
     def visit_call(self, node):
         try:
             for funcdef in node.func.infer():
@@ -108,7 +105,7 @@ class DesignChecker(BaseChecker):
         except InferenceError:
             pass
 
-    @check_messages('bad-exit-condition')
+    @utils.only_required_for_messages('bad-exit-condition')
     def visit_while(self, node):
         self._exit_statements.append(0)
         comparisons = None
@@ -124,7 +121,7 @@ class DesignChecker(BaseChecker):
                 if ops[0] in ('!=', '=='):
                     self.add_message('bad-exit-condition', node=node)
 
-    @check_messages('multiple-exit-statements')
+    @utils.only_required_for_messages('multiple-exit-statements')
     def leave_for(self, node):
         if self._exit_statements[-1] > 1:
             self.add_message('multiple-exit-statements', node=node)
@@ -137,13 +134,13 @@ class DesignChecker(BaseChecker):
     visit_break = visit_return
     leave_while = leave_for
 
-    @check_messages('too-many-decorators')
+    @utils.only_required_for_messages('too-many-decorators')
     def visit_functiondef(self, node):
         if node.decorators:
-            if len(node.decorators.nodes) > self.config.max_decorators:
+            if len(node.decorators.nodes) > self.options[0][1]['default']:
                 self.add_message('too-many-decorators', node=node,
                                  args=(len(node.decorators.nodes),
-                                       self.config.max_decorators))
+                                       self.options[0][1]['default']))
         for child in node.nodes_of_class(astroid.Call):
             try:
                 for funcdef in child.func.infer():
@@ -153,7 +150,7 @@ class DesignChecker(BaseChecker):
             except:
                 continue
 
-    @check_messages('builtin-name-used')
+    @utils.only_required_for_messages('builtin-name-used')
     def visit_classdef(self, node):
         for name, item in node.instance_attrs.items():
             self._check_node_name(node, item[0], name)
@@ -180,8 +177,6 @@ class DesignChecker(BaseChecker):
 class CommentMetricsChecker(BaseTokenChecker):
     """Checks the ratio comments+docstrings/code lines by module and by function
     """
-
-    __implements__ = (ITokenChecker, IAstroidChecker)
     
     # Theses values are hardcoded in pylint (and have changed in pylint 2.12)
     # We can't get them directly from the pylint lib :(
@@ -238,13 +233,12 @@ class CommentMetricsChecker(BaseTokenChecker):
                 self._stats[start_line] = [line_type, lines_number]
                 tail = start_line
 
-    @check_messages('too-few-comments')
+    @utils.only_required_for_messages('too-few-comments')
     def visit_functiondef(self, node):
         nb_lines = node.tolineno - node.fromlineno
-        if nb_lines <= self.config.min_func_size_to_check_comments:
+        if nb_lines <= self.options[2][1]['default']:
             return
-        func_stats = dict.fromkeys(self.LINE_TYPES,
-                                   0)
+        func_stats = dict.fromkeys(self.LINE_TYPES, 0)
         for line in sorted(self._stats):
             if line > node.tolineno:
                 break
@@ -258,22 +252,22 @@ class CommentMetricsChecker(BaseTokenChecker):
             return
         ratio = ((func_stats[self.LINE_TYPE_COMMENT] + func_stats[self.LINE_TYPE_DOCSTRING])
                  / float(func_stats[self.LINE_TYPE_CODE]) * 100)
-        if ratio < self.config.min_func_comments_ratio:
+        if ratio < self.options[0][1]['default']:
             self.add_message('too-few-comments', node=node,
                              args=('%.2f' % ratio,
-                                   self.config.min_func_comments_ratio))
+                                   self.options[0][1]['default']))
 
-    @check_messages('too-few-comments')
+    @utils.only_required_for_messages('too-few-comments')
     def visit_module(self, node):
         if self._global_stats[self.LINE_TYPE_CODE] <= 0:
             return
         ratio = ((self._global_stats[self.LINE_TYPE_COMMENT] +
                   self._global_stats[self.LINE_TYPE_DOCSTRING]) /
                  float(self._global_stats[self.LINE_TYPE_CODE]) * 100)
-        if ratio < self.config.min_module_comments_ratio:
+        if ratio < self.options[1][1]['default']:
             self.add_message('too-few-comments', node=node,
                              args=('%.2f' % ratio,
-                                   self.config.min_module_comments_ratio))
+                                   self.options[1][1]['default']))
 
     def leave_module(self, node):
         self._reset()
@@ -438,8 +432,6 @@ class McCabeASTVisitor(object):
 class McCabeChecker(BaseChecker):
     """Checks for functions or methods having a high McCabe number"""
 
-    __implements__ = (IAstroidChecker,)
-
     name = 'mccabe'
     msgs = {'R5301': ('Too high cyclomatic complexity (mccabe %d/%d)',
                       'too-high-complexity',
@@ -464,28 +456,28 @@ class McCabeChecker(BaseChecker):
         BaseChecker.__init__(self, linter)
         self.simplified_mccabe_number = []
 
-    @check_messages('too-high-complexity')
+    @utils.only_required_for_messages('too-high-complexity')
     def visit_module(self, node):
         visitor = McCabeASTVisitor()
         for child in node.body:
             visitor.preorder(child, visitor)
         for graph in visitor.graphs.values():
             complexity = graph.complexity()
-            if complexity > self.config.max_mccabe_number:
+            if complexity > self.options[0][1]['default']:
                 self.add_message('too-high-complexity', node=graph.root,
                                  args=(complexity,
-                                       self.config.max_mccabe_number))
+                                       self.options[0][1]['default']))
 
     def visit_functiondef(self, node):
         self.simplified_mccabe_number.append(0)
 
-    @check_messages('max-simplified-mccabe-number')
+    @utils.only_required_for_messages('max-simplified-mccabe-number')
     def leave_functiondef(self, node):
         complexity = self.simplified_mccabe_number.pop()
-        if complexity > self.config.max_simplified_mccabe_number:
+        if complexity > self.options[1][1]['default']:
             self.add_message('too-high-complexity-simplified', node=node,
                              args=(complexity,
-                                   self.config.max_simplified_mccabe_number))
+                                   self.options[1][1]['default']))
 
     def visit_while(self, node):
         if self.simplified_mccabe_number:
@@ -517,22 +509,28 @@ class SphinxDocChecker(docparams.DocstringParameterChecker):
         regexp[field] = (re.compile(r':%s:' % field),
                          re.compile(r':%s: \S+' % field))
 
-    @check_messages('malformed-docstring-field', 'missing-docstring-field')
+    @utils.only_required_for_messages('malformed-docstring-field', 'missing-docstring-field')
     def visit_module(self, node):
+        if not hasattr(node, 'doc') :
+            return
         if not node.doc:
             return
         for field, expr in self.regexp.values():
             self._check_docstring_field(node, field, expr)
 
-    @check_messages('malformed-docstring-field', 'missing-docstring-field')
+    @utils.only_required_for_messages('malformed-docstring-field', 'missing-docstring-field')
     def visit_classdef(self, node):
+        if not hasattr(node, 'doc') :
+            return
         if not node.doc:
             return
         self._check_description_exists(node)
 
-    @check_messages('malformed-docstring-field', 'missing-docstring-field')
+    @utils.only_required_for_messages('malformed-docstring-field', 'missing-docstring-field')
     def visit_functiondef(self, node):
         super(SphinxDocChecker, self).visit_functiondef(node)
+        if not hasattr(node, 'doc') :
+            return
         if not node.doc:
             return
         self._check_description_exists(node)
@@ -542,7 +540,7 @@ class SphinxDocChecker(docparams.DocstringParameterChecker):
 
         To do so, check the first line contains something
         """
-        if not node.doc:
+        if not hasattr(node, 'doc') :
             return
         doc_lines = [line.strip() for line in node.doc.splitlines() if line]
         if not doc_lines or doc_lines[0].startswith(':'):
@@ -565,7 +563,6 @@ class SphinxDocChecker(docparams.DocstringParameterChecker):
 class ForbiddenUsageChecker(BaseChecker):
     """Checks for use of forbidden functions or variables"""
 
-    __implements__ = (IAstroidChecker,)
     name = 'forbiddenusage'
     msgs = {'R5401': ('Consider dropping use of sys.exit()',
                       'sys-exit-used',
@@ -614,7 +611,7 @@ class ForbiddenUsageChecker(BaseChecker):
                 if self._is_sys_exit_call(call):
                     self._authorized_exits.append(call)
 
-    @check_messages('sys-exit-used')
+    @utils.only_required_for_messages('sys-exit-used')
     def visit_call(self, node):
         self._check_os_environ_call(node)
         if not self._is_sys_exit_call(node):
@@ -625,14 +622,14 @@ class ForbiddenUsageChecker(BaseChecker):
                 return
         self.add_message('sys-exit-used', node=node)
 
-    @check_messages('os-environ-used', 'sys-argv-used')
+    @utils.only_required_for_messages('os-environ-used', 'sys-argv-used')
     def visit_attribute(self, node):
         if self._check_access(node, ('os', os.name), 'environ', astroid.Dict):
             self.add_message('os-environ-used', node=node, args='environ')
         if self._check_access(node, ('sys',), 'argv', astroid.List):
             self.add_message('sys-argv-used', node=node)
 
-    @check_messages('os-environ-used', 'sys-argv-used')
+    @utils.only_required_for_messages('os-environ-used', 'sys-argv-used')
     def visit_name(self, node):
         if self._check_access(node, ('os', os.name), 'environ', astroid.Dict,
                               False):
