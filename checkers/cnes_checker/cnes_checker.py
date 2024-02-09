@@ -254,8 +254,8 @@ class CommentMetricsChecker(BaseTokenChecker):
                  / float(func_stats[self.LINE_TYPE_CODE]) * 100)
         if ratio < self.options[0][1]['default']:
             self.add_message('too-few-comments', node=node,
-                             args=('%.2f' % ratio,
-                                   self.options[0][1]['default']))
+                            args=(f'{ratio:.2f}', self.options[0][1]['default']))
+
 
     @utils.only_required_for_messages('too-few-comments')
     def visit_module(self, node):
@@ -266,8 +266,8 @@ class CommentMetricsChecker(BaseTokenChecker):
                  float(self._global_stats[self.LINE_TYPE_CODE]) * 100)
         if ratio < self.options[1][1]['default']:
             self.add_message('too-few-comments', node=node,
-                             args=('%.2f' % ratio,
-                                   self.options[1][1]['default']))
+                             args=(f'{ratio:.2f}', self.options[1][1]['default']))
+
 
     def leave_module(self, node):
         self._reset()
@@ -340,7 +340,7 @@ class McCabeASTVisitor(object):
             pathnode = self._append_node(node)
             self.tail = pathnode
             self.dispatch_list(node.body)
-            bottom = "%s" % self._bottom_counter
+            bottom = f"{self._bottom_counter}"
             self._bottom_counter += 1
             self.graph.connect(self.tail, bottom)
             self.graph.connect(node, bottom)
@@ -349,7 +349,7 @@ class McCabeASTVisitor(object):
             self.graph = PathGraph(node)
             self.tail = node
             self.dispatch_list(node.body)
-            self.graphs["%s%s" % (self.classname, node.name)] = self.graph
+            self.graphs[f"{self.classname}{node.name}"] = self.graph
             self.reset()
 
     def visitClassDef(self, node):
@@ -367,17 +367,17 @@ class McCabeASTVisitor(object):
         visitExpr = visitSimpleStatement
 
     def visitIf(self, node):
-        name = "If %d" % node.lineno
+        name = f"If {node.lineno}"
         self._subgraph(node, name)
 
     def visitLoop(self, node):
-        name = "Loop %d" % node.lineno
+        name = f"Loop {node.lineno}"
         self._subgraph(node, name)
 
     visitFor = visitWhile = visitLoop
 
     def visitTryExcept(self, node):
-        name = "TryExcept %d" % node.lineno
+        name = f"TryExcept {node.lineno}"
         self._subgraph(node, name, extra_blocks=node.handlers)
 
     visitTry = visitTryExcept
@@ -399,7 +399,7 @@ class McCabeASTVisitor(object):
             # global loop
             self.graph = PathGraph(node)
             self._subgraph_parse(node, extra_blocks)
-            self.graphs["%s%s" % (self.classname, name)] = self.graph
+            self.graphs[f"{self.classname}{name}"] = self.graph
             self.reset()
         else:
             self._append_node(node)
@@ -422,7 +422,7 @@ class McCabeASTVisitor(object):
         else:
             loose_ends.append(node)
         if node:
-            bottom = "%s" % self._bottom_counter
+            bottom = f"{self._bottom_counter}"
             self._bottom_counter += 1
             for le in loose_ends:
                 self.graph.connect(le, bottom)
@@ -506,8 +506,8 @@ class SphinxDocChecker(docparams.DocstringParameterChecker):
 
     regexp = {}
     for field in ('author', 'version', 'date'):
-        regexp[field] = (re.compile(r':%s:' % field),
-                         re.compile(r':%s: \S+' % field))
+        regexp[field] = (re.compile(fr':{field}:'),
+                         re.compile(fr':{field}: \S+'))
 
     @utils.only_required_for_messages('malformed-docstring-field', 'missing-docstring-field')
     def visit_module(self, node):
@@ -681,7 +681,7 @@ class ForbiddenUsageChecker(BaseChecker):
                 if (funcdef.name in ('putenv', 'getenv', 'unsetenv')
                         and funcdef.root().name in('os', os.name)):
                     self.add_message('os-environ-used', node=node,
-                                     args='%s()' % funcdef.name)
+                                     args=f"{funcdef.name}()")
                     return
         except InferenceError:
             pass
