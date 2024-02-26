@@ -70,6 +70,7 @@ class DesignChecker(BaseChecker):
 
     def __init__(self, linter=None):
         BaseChecker.__init__(self, linter)
+        self.config = linter.config
         self._exit_statements = []
 
     def visit_for(self, node):
@@ -136,11 +137,12 @@ class DesignChecker(BaseChecker):
 
     @utils.only_required_for_messages('too-many-decorators')
     def visit_functiondef(self, node):
+        max_decorators = getattr(self.config, 'max_decorators', self.options[0][1]['default'])
         if node.decorators:
-            if len(node.decorators.nodes) > self.options[0][1]['default']:
+            if len(node.decorators.nodes) > max_decorators:
                 self.add_message('too-many-decorators', node=node,
                                  args=(len(node.decorators.nodes),
-                                       self.options[0][1]['default']))
+                                       max_decorators))
         for child in node.nodes_of_class(astroid.Call):
             try:
                 for funcdef in child.func.infer():
@@ -194,6 +196,7 @@ class CommentMetricsChecker(BaseTokenChecker):
                       {'scope': WarningScope.NODE}
                      ),
            }
+    
     options = (('min-func-comments-ratio',
                 {'default': 30, 'type': 'int', 'metavar': '<int>',
                  'help': 'Minimum ratio (comments+docstrings)/code_lines for a '
@@ -210,6 +213,7 @@ class CommentMetricsChecker(BaseTokenChecker):
 
     def __init__(self, linter):
         BaseTokenChecker.__init__(self, linter)
+        self.config = linter.config
         self._reset()
 
     def _reset(self):
@@ -235,6 +239,7 @@ class CommentMetricsChecker(BaseTokenChecker):
 
     @utils.only_required_for_messages('too-few-comments')
     def visit_functiondef(self, node):
+        min_func_comments_ratio = getattr(self.config, 'min_func_comments_ratio', self.options[0][1]['default'])
         nb_lines = node.tolineno - node.fromlineno
         if nb_lines <= self.options[2][1]['default']:
             return
@@ -252,21 +257,21 @@ class CommentMetricsChecker(BaseTokenChecker):
             return
         ratio = ((func_stats[self.LINE_TYPE_COMMENT] + func_stats[self.LINE_TYPE_DOCSTRING])
                  / float(func_stats[self.LINE_TYPE_CODE]) * 100)
-        if ratio < self.options[0][1]['default']:
+        if ratio < min_func_comments_ratio:
             self.add_message('too-few-comments', node=node,
-                            args=(f'{ratio:.2f}', self.options[0][1]['default']))
-
+                            args=(f'{ratio:.2f}', min_func_comments_ratio))
 
     @utils.only_required_for_messages('too-few-comments')
     def visit_module(self, node):
+        min_module_comments_ratio = getattr(self.config, 'min_module_comments_ratio', self.options[1][1]['default'])
         if self._global_stats[self.LINE_TYPE_CODE] <= 0:
             return
         ratio = ((self._global_stats[self.LINE_TYPE_COMMENT] +
                   self._global_stats[self.LINE_TYPE_DOCSTRING]) /
                  float(self._global_stats[self.LINE_TYPE_CODE]) * 100)
-        if ratio < self.options[1][1]['default']:
+        if ratio < min_module_comments_ratio:
             self.add_message('too-few-comments', node=node,
-                             args=(f'{ratio:.2f}', self.options[1][1]['default']))
+                             args=(f'{ratio:.2f}', min_module_comments_ratio))
 
 
     def leave_module(self, node):
@@ -454,30 +459,33 @@ class McCabeChecker(BaseChecker):
 
     def __init__(self, linter=None):
         BaseChecker.__init__(self, linter)
+        self.config = linter.config
         self.simplified_mccabe_number = []
 
     @utils.only_required_for_messages('too-high-complexity')
     def visit_module(self, node):
+        max_mccabe_number = getattr(self.config, 'max_mccabe_number', self.options[0][1]['default'])
         visitor = McCabeASTVisitor()
         for child in node.body:
             visitor.preorder(child, visitor)
         for graph in visitor.graphs.values():
             complexity = graph.complexity()
-            if complexity > self.options[0][1]['default']:
+            if complexity > max_mccabe_number:
                 self.add_message('too-high-complexity', node=graph.root,
                                  args=(complexity,
-                                       self.options[0][1]['default']))
+                                       max_mccabe_number))
 
     def visit_functiondef(self, node):
         self.simplified_mccabe_number.append(0)
 
     @utils.only_required_for_messages('max-simplified-mccabe-number')
     def leave_functiondef(self, node):
+        max_simplified_mccabe_number = getattr(self.config, 'max_simplified_mccabe_number', self.options[1][1]['default'])
         complexity = self.simplified_mccabe_number.pop()
-        if complexity > self.options[1][1]['default']:
+        if complexity > max_simplified_mccabe_number:
             self.add_message('too-high-complexity-simplified', node=node,
                              args=(complexity,
-                                   self.options[1][1]['default']))
+                                   max_simplified_mccabe_number))
 
     def visit_while(self, node):
         if self.simplified_mccabe_number:
