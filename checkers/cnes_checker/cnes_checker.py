@@ -240,8 +240,9 @@ class CommentMetricsChecker(BaseTokenChecker):
     @utils.only_required_for_messages('too-few-comments')
     def visit_functiondef(self, node):
         min_func_comments_ratio = getattr(self.config, 'min_func_comments_ratio', self.options[0][1]['default'])
+        min_func_size_to_check_comments = getattr(self.config, 'min_func_size_to_check_comments', self.options[2][1]['default'])
         nb_lines = node.tolineno - node.fromlineno
-        if nb_lines <= self.options[2][1]['default']:
+        if nb_lines <= min_func_size_to_check_comments:
             return
         func_stats = dict.fromkeys(self.LINE_TYPES, 0)
         for line in sorted(self._stats):
