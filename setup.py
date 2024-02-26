@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="cnes-pylint-extension",
-    version="8.0.0",
+    version="7.0.0",
     author="CNES CatLab",
     description="A PyLint plugin to add CNES specific checks",
     long_description=long_description,
