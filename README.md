@@ -40,7 +40,7 @@ cnes-pylint-extension checks the following metrics :
 
 ### Install Pylint
 
-`pip install pylint==3.0.3`
+`pip install "pylint>=3.0.0,<4.0.0"`
 
 ### Install CNES Pylint extension checkers
 
